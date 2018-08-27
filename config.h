@@ -31,7 +31,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Select hand configuration */
 
 #define MASTER_LEFT
+
+#define MOUSEKEY_DELAY             50
+#define MOUSEKEY_INTERVAL          100
+#define MOUSEKEY_MAX_SPEED         50
+#define MOUSEKEY_TIME_TO_MAX       50
+#define MOUSEKEY_WHEEL_MAX_SPEED   0
+#define MOUSEKEY_WHEEL_TIME_TO_MAX 255
 // #define _MASTER_RIGHT
 // #define EE_HANDS
 
 #endif
+
