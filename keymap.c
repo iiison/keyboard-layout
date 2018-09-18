@@ -15,22 +15,22 @@ extern keymap_config_t keymap_config;
 // Layer names don't all need to be of the same length, obviously, and you can also skip them
 // entirely and just use numbers.
 #define _QWERTY 0
-#define _RAISE 1
-#define _LOWER 2
-#define _GAME   3
+#define _RAISE  1
+#define _LOWER  2
+#define _ADJUST 3
 #define _ARROW  4
 #define _PLOVER 5
-#define _ADJUST 16
+#define _GAME   3
 
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
-  ARROW,
-  GAME,
-  LOWER,
   RAISE,
+  LOWER,
+  ARROW,
   BACKLIT,
   PLOVER,
-  EXT_PLV
+  EXT_PLV,
+  GAME
 };
 
 // Fillers to make layering more clear
@@ -73,7 +73,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  _______, KC_1,       KC_2,    KC_3,    KC_4,          KC_5,       KC_6,          KC_7,         KC_8,        KC_9,          KC_0,           _______, \
  _______, KC_EXCLAIM, KC_AT,   KC_HASH, KC_DOLLAR,     KC_PERCENT, KC_CIRCUMFLEX, KC_AMPERSAND, KC_ASTERISK, KC_LEFT_PAREN, KC_RIGHT_PAREN, KC_BSLS, \
  _______, KC_MINS,    KC_PLUS, KC_EQL,  KC_UNDERSCORE, XXXXXXX,    XXXXXXX,       KC_RSFT,      XXXXXXX,     KC_LBRC,       KC_RBRC,        KC_ENT, \
- _______, _______,    _______, _______, _______,       KC_DELETE,  KC_BSPC,       _______,      _______,     _______,       _______,        _______ \
+ _______, _______,    _______, _______, _______,       KC_DELETE,  KC_BSPC,       _______,      _______,     _______,       _______,        LOWER \
 ),
 
 
@@ -91,10 +91,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * use KC_PAUS -- for brightness down
  */
 [_LOWER] = LAYOUT_ortho_4x12( \
-  _______, KC_F14, KC_F15, KC__MUTE, KC__VOLDOWN, KC__VOLUP, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______, \
-  _______, KC_WH_U, KC_BTN2, KC_MS_U, KC_BTN1, XXXXXXX, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, KC_ENT, \
-  _______, KC_WH_D, KC_MS_L, KC_MS_D, KC_MS_R, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______ \
+  _______, KC_F14,  KC_F15,  KC__MUTE, KC__VOLDOWN, KC__VOLUP, KC_WH_L, KC_BTN1, KC_WH_R, XXXXXXX, LOWER, _______, \
+  _______, KC_WH_U, KC_BTN2, KC_MS_U,  KC_BTN1,     XXXXXXX,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, KC_ENT, \
+  _______, KC_WH_D, KC_MS_L, KC_MS_D,  KC_MS_R,     XXXXXXX,   XXXXXXX, QWERTY,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
+  _______, _______, _______, _______,  _______,     _______,   _______, _______, _______, _______, _______, _______ \
 ),
 
 
@@ -146,14 +146,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * | Exit |      |      |   A  |   O  |             |   E  |   U  |      |      |      |
  * `-----------------------------------------------------------------------------------'
  */
-
 [_PLOVER] = LAYOUT_ortho_4x12 ( \
   KC_1,    KC_1,    KC_1,    KC_1,    KC_1,    KC_1,    KC_1,    KC_1,    KC_1,    KC_1,    KC_1,    KC_1   , \
   XXXXXXX, KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, \
   XXXXXXX, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT, \
   EXT_PLV, XXXXXXX, XXXXXXX, KC_C,    KC_V,    XXXXXXX, XXXXXXX, KC_N,    KC_M,    XXXXXXX, XXXXXXX, XXXXXXX \
 ),
-
 
 /* Adjust (Lower + Raise)
  * ,-----------------------------------------------------------------------------------.
