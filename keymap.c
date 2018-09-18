@@ -87,7 +87,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |  Esc |      |      |      |      |      |   0  |      |      |      | KP_+ |      |
  * `-----------------------------------------------------------------------------------'
- * use KC_SLCK -- for brightness up 
+ * use KC_SLCK -- for brightness up
  * use KC_PAUS -- for brightness down
  */
 [_LOWER] = LAYOUT_ortho_4x12( \
