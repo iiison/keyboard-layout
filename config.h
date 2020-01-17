@@ -38,8 +38,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_TIME_TO_MAX       50
 #define MOUSEKEY_WHEEL_MAX_SPEED   0
 #define MOUSEKEY_WHEEL_TIME_TO_MAX 255
+
+#define TAPPING_TERM               200
 // #define _MASTER_RIGHT
 // #define EE_HANDS
+
+// Link time optimizations
+/* #define NO_ACTION_MACRO */
+/* #define NO_ACTION_FUNCTION */
+
+#ifndef NO_DEBUG
+#define NO_DEBUG
+#endif // !NO_DEBUG
+#if !defined(NO_PRINT) && !defined(CONSOLE_ENABLE)
+#define NO_PRINT
+#endif // !NO_PRINT
 
 #endif
 
