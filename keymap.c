@@ -31,7 +31,8 @@ enum custom_keycodes {
   DEBUG_STEP_OVER,
   DEBUG_STEP_IN,
   DEBUG_STEP_OUT,
-  DISABLE_DEBUGER
+  DISABLE_DEBUGER,
+  PWD
 };
 
 // Tap Dance Declarations
@@ -116,14 +117,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * +------+--------+----------+--------------+-------------+------------+-----------+-----+-----+-----+-----+-----+
   * |  xxx | Voice- |  Voice+  |   Music on   |  Music off  |  Next Song | Prev Song | xxx | xxx | xxx | xxx | xxx |
   * +------+--------+----------+--------------+-------------+------------+-----------+-----+-----+-----+-----+-----+
-  * |  xxx |   xxx  |    xxx   |              |             | Play/Pause | Next/Prev |     |     | xxx | xxx | xxx |
+  * |  xxx |   xxx  |    xxx   |              |             | Play/Pause | Next/Prev |     |     | xxx | xxx | PWD |
   * `------+--------+----------+--------------+-------------+------------+-----------+-----+-----+-----+-----+-----'
   */
   [_ADJUST] = LAYOUT_ortho_4x12( \
     XXXXXXX, QWERTY,  AU_ON,   AU_OFF,       RESET,       XXXXXXX, XXXXXXX,         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
     KC_CAPS, XXXXXXX, XXXXXXX, CHROME_DEBUG, CHROME_ONLY, XXXXXXX, XXXXXXX,         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
     XXXXXXX, MUV_DE,  MUV_IN,  MU_ON,        MU_OFF,      KC_MPRV, KC_MNXT,         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
-    XXXXXXX, XXXXXXX, XXXXXXX, _______,      _______,     KC_MPLY, TD(TD_NXT_PREV), _______, _______, XXXXXXX, XXXXXXX, XXXXXXX \
+    XXXXXXX, XXXXXXX, XXXXXXX, _______,      _______,     KC_MPLY, TD(TD_NXT_PREV), _______, _______, XXXXXXX, XXXXXXX, PWD \
   )
 };
 
@@ -185,23 +186,31 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return false;
       break;
 
-      case CHROME_DEBUG:
-      case CHROME_ONLY:
-        if (record->event.pressed) {
-          SEND_STRING(SS_LGUI(" "));
-          SEND_STRING("google chrome");
-          SEND_STRING(SS_TAP(X_ENT));
+    case PWD:
+      if (record->event.pressed) {
+        SEND_STRING("*********");
+      }
 
-          if (keycode == CHROME_DEBUG) {
-            send_string_with_delay_P(PSTR(SS_LGUI(SS_LALT("j"))), 244);
-          }
+      return false;
+      break;
 
-          #ifdef AUDIO_ENABLE
-            PLAY_SONG(guitar_song);
-          #endif
+    case CHROME_DEBUG:
+    case CHROME_ONLY:
+      if (record->event.pressed) {
+        SEND_STRING(SS_LGUI(" "));
+        SEND_STRING("google chrome");
+        SEND_STRING(SS_TAP(X_ENT));
+
+        if (keycode == CHROME_DEBUG) {
+          send_string_with_delay_P(PSTR(SS_LGUI(SS_LALT("j"))), 244);
         }
-        return false;
-        break;
+
+        #ifdef AUDIO_ENABLE
+          PLAY_SONG(guitar_song);
+        #endif
+      }
+      return false;
+      break;
 
       case DEBUG_STEP_OVER:
         if (record->event.pressed) {
@@ -214,52 +223,52 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
         break;
 
-      case DEBUG_STEP_IN:
-        if (record->event.pressed) {
-          SEND_STRING(SS_LGUI(";"));
+    case DEBUG_STEP_IN:
+      if (record->event.pressed) {
+        SEND_STRING(SS_LGUI(";"));
 
-          #ifdef AUDIO_ENABLE
-            PLAY_SONG(guitar_song);
-          #endif
-        }
-        return false;
-        break;
+        #ifdef AUDIO_ENABLE
+          PLAY_SONG(guitar_song);
+        #endif
+      }
+      return false;
+      break;
 
-       case DEBUG_STEP_OUT:
-        if (record->event.pressed) {
-          SEND_STRING(SS_LGUI(SS_LSFT(";")));
+    case DEBUG_STEP_OUT:
+      if (record->event.pressed) {
+        SEND_STRING(SS_LGUI(SS_LSFT(";")));
 
-          #ifdef AUDIO_ENABLE
-            PLAY_SONG(guitar_song);
-          #endif
-        }
-        return false;
-        break;
+        #ifdef AUDIO_ENABLE
+          PLAY_SONG(guitar_song);
+        #endif
+      }
+      return false;
+      break;
 
-      case DISABLE_DEBUGER:
-        if (record->event.pressed) {
-          SEND_STRING(SS_LGUI(SS_TAP(X_F8)));
+    case DISABLE_DEBUGER:
+      if (record->event.pressed) {
+        SEND_STRING(SS_LGUI(SS_TAP(X_F8)));
 
-          #ifdef AUDIO_ENABLE
-            PLAY_SONG(guitar_song);
-          #endif
-        }
-        return false;
-        break;
+        #ifdef AUDIO_ENABLE
+          PLAY_SONG(guitar_song);
+        #endif
+      }
+      return false;
+      break;
 
-      case PAUSE_SCRIPT:
-        if (record->event.pressed) {
-          #ifdef AUDIO_ENABLE
-            PLAY_SONG(mu_on_scale);
-          #endif
-          SEND_STRING(SS_TAP(X_F8));
-        }
-        return false;
-        break;
-     }
+    case PAUSE_SCRIPT:
+      if (record->event.pressed) {
+        #ifdef AUDIO_ENABLE
+          PLAY_SONG(mu_on_scale);
+        #endif
+        SEND_STRING(SS_TAP(X_F8));
+      }
+      return false;
+      break;
+  }
+
   return true;
 }
 
 void matrix_init_user(void) {
-
 }
