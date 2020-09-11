@@ -1,5 +1,3 @@
-// Can't Remember Sh*t Keymap for 4x12 ortho
-// http://www.keyboard-layout-editor.com/#/gists/b82f58ec7885acf469da93c891490bec
 
 #include QMK_KEYBOARD_H
 #include "action_layer.h"
