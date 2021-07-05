@@ -35,12 +35,18 @@ enum custom_keycodes {
 
 // Tap Dance Declarations
 enum {
-  TD_NXT_PREV = 0
+  TD_NXT_PREV = 0,
+  TD_RCMD_RSHFT,
+  TD_TAB_AT,
+  TD_SEMI_COLON
 };
 
 //Tap Dance Definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
-  [TD_NXT_PREV]  = ACTION_TAP_DANCE_DOUBLE(KC_MNXT, KC_MPRV)
+  [TD_NXT_PREV]  = ACTION_TAP_DANCE_DOUBLE(KC_MNXT, KC_MPRV),
+  [TD_RCMD_RSHFT] = ACTION_TAP_DANCE_DOUBLE(KC_RGUI, KC_RSFT),
+  [TD_TAB_AT] = ACTION_TAP_DANCE_DOUBLE(KC_TAB, KC_AT),
+  [TD_SEMI_COLON] = ACTION_TAP_DANCE_DOUBLE(KC_SCLN, KC_COLN)
 };
 
 // Fillers to make layering more clear
@@ -50,21 +56,21 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /* Qwerty
-  * ,------------------------------------------------------------------------------------.
-  * |  `   |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  |  Bksp |
-  * |------+------+------+------+------+-------------+------+------+------+------+-------|
-  * | esc  |   A  |   S  |   D  |   F  |   G  |   H  |   J  |   K  |   L  |  ; : | Enter |
-  * |------+------+------+------+------+------|------+------+------+------+------+-------|
-  * | shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |  ' "  |
-  * |------+------+------+------+------+------+------+------+------+------+------+-------|
-  * | ctrl |  alt | cmd  |Lower | Raise|  tab | Space| Raise| Lower| cmd  | alt  |  ctrl |
-  * `------------------------------------------------------------------------------------'
+  * ,-----------------------------------------------------------------------------------------.
+  * |  `   |   Q  |   W  |   E  |   R  |   T   |   Y  |   U  |   I  |   O  |   P  |    Bksp   |
+  * |------+------+------+------+------+-------+------+------+------+------+------+-----------|
+  * | esc  |   A  |   S  |   D  |   F  |   G   |   H  |   J  |   K  |   L  |  ; : |   Enter   |
+  * |------+------+------+------+------+-------|------+------+------+------+------+-----------|
+  * | shift|   Z  |   X  |   C  |   V  |   B   |   N  |   M  |   ,  |   .  |   /  |    ' "    |
+  * |------+------+------+------+------+-------+------+------+------+------+------+-----------|
+  * | ctrl |  alt | cmd  |Lower | Raise| tab/@ | Space| Raise| Lower| cmd  | alt  | ctrl/shft |
+  * `-----------------------------------------------------------------------------------------'
   */
   [_QWERTY] = LAYOUT_ortho_4x12( \
-    KC_GRV,  KC_Q,    KC_W,    KC_E,  KC_R,  KC_T,   KC_Y,   KC_U,  KC_I,    KC_O,    KC_P,    KC_BSPC, \
-    KC_ESC,  KC_A,    KC_S,    KC_D,  KC_F,  KC_G,   KC_H,   KC_J,  KC_K,    KC_L,    KC_SCLN, KC_ENT, \
-    KC_LSFT, KC_Z,    KC_X,    KC_C,  KC_V,  KC_B,   KC_N,   KC_M,  KC_COMM, KC_DOT,  KC_SLSH, KC_QUOT, \
-    KC_LCTL, KC_LALT, KC_LGUI, LOWER, RAISE, KC_TAB, KC_SPC, RAISE, LOWER,   KC_RCTL, KC_RALT, KC_RGUI\
+    KC_GRV,  KC_Q,    KC_W,    KC_E,  KC_R,  KC_T,          KC_Y,   KC_U,  KC_I,    KC_O,    KC_P,              KC_BSPC, \
+    KC_ESC,  KC_A,    KC_S,    KC_D,  KC_F,  KC_G,          KC_H,   KC_J,  KC_K,    KC_L,    TD(TD_SEMI_COLON), KC_ENT, \
+    KC_LSFT, KC_Z,    KC_X,    KC_C,  KC_V,  KC_B,          KC_N,   KC_M,  KC_COMM, KC_DOT,  KC_SLSH,           KC_QUOT, \
+    KC_LCTL, KC_LALT, KC_LGUI, LOWER, RAISE, TD(TD_TAB_AT), KC_SPC, RAISE, LOWER,   KC_RCTL, KC_RALT,           TD(TD_RCMD_RSHFT)\
   ),
 
 
@@ -186,7 +192,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     case PWD:
       if (record->event.pressed) {
-        SEND_STRING("*********");
+        wait_ms(500);
+        send_string_with_delay_P("********", 100);
       }
 
       return false;
@@ -195,11 +202,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case CHROME_DEBUG:
     case CHROME_ONLY:
       if (record->event.pressed) {
-        SEND_STRING(SS_LGUI(" "));
+        wait_ms(500);
+        send_string_with_delay_P(SS_LGUI(" "), 200);
+        wait_ms(500);
         SEND_STRING("google chrome");
         SEND_STRING(SS_TAP(X_ENT));
 
         if (keycode == CHROME_DEBUG) {
+          wait_ms(500);
           send_string_with_delay_P(PSTR(SS_LGUI(SS_LALT("j"))), 244);
         }
 
