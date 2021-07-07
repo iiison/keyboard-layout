@@ -5,6 +5,7 @@
   #include "audio.h"
 #endif
 #include "eeconfig.h"
+#include "td_recipes.h"
 
 extern keymap_config_t keymap_config;
 
@@ -34,10 +35,18 @@ enum custom_keycodes {
 };
 
 // Tap Dance Declarations
+void raise_at(qk_tap_dance_state_t *state, void *user_data) {
+  hold_dbl_tap(state, KC_AT, _RAISE, true);
+}
+
+void raise_at_reset(qk_tap_dance_state_t *state, void *user_data) {
+  tap_reset(KC_AT, _RAISE);
+}
+
 enum {
   TD_NXT_PREV = 0,
   TD_RCMD_RSHFT,
-  /* TD_RAISE_AT, */
+  TD_RAISE_AT,
   TD_SEMI_COLON,
   /* TD_RAISE_CAPS */
 };
@@ -46,9 +55,10 @@ enum {
 qk_tap_dance_action_t tap_dance_actions[] = {
   [TD_NXT_PREV]  = ACTION_TAP_DANCE_DOUBLE(KC_MNXT, KC_MPRV),
   [TD_RCMD_RSHFT] = ACTION_TAP_DANCE_DOUBLE(KC_RGUI, KC_RSFT),
-  /* [TD_RAISE_AT] = ACTION_TAP_DANCE_DUAL_ROLE(RAISE, KC_AT), */
+  [TD_RAISE_AT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, raise_at, raise_at_reset),
   [TD_SEMI_COLON] = ACTION_TAP_DANCE_DOUBLE(KC_SCLN, KC_COLN),
   /* [TD_RAISE_CAPS] = ACTION_TAP_DANCE_DUAL_ROLE(RAISE, KC_CAPS) */
+  /*TD(TD_RAISE_AT),*/
 };
 
 // Fillers to make layering more clear
@@ -72,7 +82,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_GRV,  KC_Q,    KC_W,    KC_E,  KC_R,  KC_T,     KC_Y,   KC_U,   KC_I,           KC_O,    KC_P,              KC_BSPC, \
     KC_ESC,  KC_A,    KC_S,    KC_D,  KC_F,  KC_G,     KC_H,   KC_J,   KC_K,           KC_L,    TD(TD_SEMI_COLON), KC_ENT, \
     KC_LSFT, KC_Z,    KC_X,    KC_C,  KC_V,  KC_B,     KC_N,   KC_M,   KC_COMM,        KC_DOT,  KC_SLSH,           KC_QUOT, \
-    KC_LCTL, KC_LALT, KC_LGUI, LOWER, LT(1, KC_AT),    KC_TAB, KC_SPC, LT(1, KC_CAPS), LOWER,   KC_RCTL, KC_RALT,  TD(TD_RCMD_RSHFT)\
+    KC_LCTL, KC_LALT, KC_LGUI, LOWER, RAISE, KC_TAB, KC_SPC, TD(TD_RAISE_AT), LOWER,   KC_RCTL, KC_RALT,  TD(TD_RCMD_RSHFT)\
   ),
 
 
