@@ -33,11 +33,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MASTER_LEFT
 
 #define MOUSEKEY_DELAY             50
-#define MOUSEKEY_INTERVAL          100
+#define MOUSEKEY_INTERVAL          80
 #define MOUSEKEY_MAX_SPEED         50
 #define MOUSEKEY_TIME_TO_MAX       50
-#define MOUSEKEY_WHEEL_MAX_SPEED   0
-#define MOUSEKEY_WHEEL_TIME_TO_MAX 255
+#define MOUSEKEY_WHEEL_MAX_SPEED   8
+#define MOUSEKEY_WHEEL_TIME_TO_MAX 200
+#define MOUSEKEY_WHEEL_INTERVAL    100
+#define MOUSEKEY_WHEEL_DELAY       0
 
 #define TAPPING_TERM               200
 // #define _MASTER_RIGHT
