@@ -1,2 +1,2 @@
 # keyboard-layout
-<img src="https://i.imgur.com/2zIcFdy.jpg" />
+<img src="https://i.imgur.com/WX9IhQY.png" />
