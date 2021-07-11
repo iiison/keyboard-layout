@@ -43,11 +43,26 @@ void raise_at_reset(qk_tap_dance_state_t *state, void *user_data) {
   tap_reset(KC_AT, _RAISE);
 }
 
+void f_tmux_prefix(qk_tap_dance_state_t *state, void *user_data) {
+  uint16_t mods[] = { KC_LCTL };
+  int size = 1;
+
+  mod_key(state, KC_F, mods, size,  KC_A);
+}
+
+void f_tmux_prefix_reset(qk_tap_dance_state_t *state, void *user_data) {
+  uint16_t mods[] = { KC_LCTL };
+  int size = 1;
+
+  mod_key_reset(mods, size);
+}
+
 enum {
   TD_NXT_PREV = 0,
   TD_RCMD_RSHFT,
   TD_RAISE_AT,
   TD_SEMI_COLON,
+  F_TMUX_PREFIX
   /* TD_RAISE_CAPS */
 };
 
@@ -56,6 +71,7 @@ qk_tap_dance_action_t tap_dance_actions[] = {
   [TD_NXT_PREV]  = ACTION_TAP_DANCE_DOUBLE(KC_MNXT, KC_MPRV),
   [TD_RCMD_RSHFT] = ACTION_TAP_DANCE_DOUBLE(KC_RGUI, KC_RSFT),
   [TD_RAISE_AT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, raise_at, raise_at_reset),
+  [F_TMUX_PREFIX] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, f_tmux_prefix, f_tmux_prefix_reset),
   [TD_SEMI_COLON] = ACTION_TAP_DANCE_DOUBLE(KC_SCLN, KC_COLN),
   /* [TD_RAISE_CAPS] = ACTION_TAP_DANCE_DUAL_ROLE(RAISE, KC_CAPS) */
   /*TD(TD_RAISE_AT),*/
@@ -68,21 +84,21 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /* Qwerty
-  * ,----------------------------------------------------------------------------------------------------.
-  * |  `   |   Q  |   W  |   E  |    R   |   T  |   Y  |     U     |      I    |   O  |   P  |    Bksp   |
-  * |------+------+------+------+--------+------+------+-----------+-----------+------+------+-----------|
-  * | esc  |   A  |   S  |   D  |    F   |   G  |   H  |     J     |      K    |   L  |  ; : |   Enter   |
-  * |------+------+------+------+--------+------|------+-----------+-----------+------+------+-----------|
-  * | shift|   Z  |   X  |   C  |    V   |   B  |   N  |     M     |      ,    |   .  |   /  |    ' "    |
-  * |------+------+------+------+--------+------+------+-----------+-----------+------+------+-----------|
-  * | ctrl |  alt | cmd  |Lower | Raise/@| tab  | Space| Raise/Caps|   Lower   | cmd  | alt  | ctrl/shft |
-  * `----------------------------------------------------------------------------------------------------'
+  * ,---------------------------------------------------------------------------------------------------------.
+  * |  `   |   Q  |   W  |   E  |      R      |   T  |   Y  |     U     |      I    |   O  |   P  |    Bksp   |
+  * |------+------+------+------+-------------+------+------+-----------+-----------+------+------+-----------|
+  * | esc  |   A  |   S  |   D  |   F/ctrl+a  |   G  |   H  |     J     |      K    |   L  |  ; : |   Enter   |
+  * |------+------+------+------+-------------+------|------+-----------+-----------+------+------+-----------|
+  * | shift|   Z  |   X  |   C  |      V      |   B  |   N  |     M     |      ,    |   .  |   /  |    ' "    |
+  * |------+------+------+------+-------------+------+------+-----------+-----------+------+------+-----------|
+  * | ctrl |  alt | cmd  |Lower |    Raise    | tab  | Space|  Raise/@  |   Lower   | cmd  | alt  | ctrl/shft |
+  * `---------------------------------------------------------------------------------------------------------'
   */
   [_QWERTY] = LAYOUT_ortho_4x12( \
-    KC_GRV,  KC_Q,    KC_W,    KC_E,  KC_R,  KC_T,     KC_Y,   KC_U,   KC_I,           KC_O,    KC_P,              KC_BSPC, \
-    KC_ESC,  KC_A,    KC_S,    KC_D,  KC_F,  KC_G,     KC_H,   KC_J,   KC_K,           KC_L,    TD(TD_SEMI_COLON), KC_ENT, \
-    KC_LSFT, KC_Z,    KC_X,    KC_C,  KC_V,  KC_B,     KC_N,   KC_M,   KC_COMM,        KC_DOT,  KC_SLSH,           KC_QUOT, \
-    KC_LCTL, KC_LALT, KC_LGUI, LOWER, RAISE, KC_TAB, KC_SPC, TD(TD_RAISE_AT), LOWER,   KC_RCTL, KC_RALT,  TD(TD_RCMD_RSHFT)\
+    KC_GRV,  KC_Q,    KC_W,    KC_E,  KC_R,              KC_T,     KC_Y,   KC_U,            KC_I,    KC_O,    KC_P,              KC_BSPC, \
+    KC_ESC,  KC_A,    KC_S,    KC_D,  TD(F_TMUX_PREFIX), KC_G,     KC_H,   KC_J,            KC_K,    KC_L,    TD(TD_SEMI_COLON), KC_ENT, \
+    KC_LSFT, KC_Z,    KC_X,    KC_C,  KC_V,              KC_B,     KC_N,   KC_M,            KC_COMM, KC_DOT,  KC_SLSH,           KC_QUOT, \
+    KC_LCTL, KC_LALT, KC_LGUI, LOWER, RAISE,             KC_TAB,   KC_SPC, TD(TD_RAISE_AT), LOWER,   KC_RCTL, KC_RALT,           TD(TD_RCMD_RSHFT)\
   ),
 
 
