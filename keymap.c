@@ -13,16 +13,18 @@ extern keymap_config_t keymap_config;
 // The underscores don't mean anything - you can have a layer called STUFF or any other name.
 // Layer names don't all need to be of the same length, obviously, and you can also skip them
 // entirely and just use numbers.
-#define _QWERTY 0
-#define _RAISE  1
-#define _LOWER  2
-#define _ADJUST 3
+#define _QWERTY  0
+#define _RAISE   1
+#define _LOWER   2
+#define _ADJUST  3
+#define _WINDOWS 4
 
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
   RAISE,
   LOWER,
   BACKLIT,
+  WINDOWS,
   PR_LOWER,
   CHROME_ONLY,
   CHROME_DEBUG,
@@ -62,7 +64,8 @@ enum {
   TD_RCMD_RSHFT,
   TD_RAISE_AT,
   TD_SEMI_COLON,
-  F_TMUX_PREFIX
+  F_TMUX_PREFIX,
+  TD_RCTRL_RALT
   /* TD_RAISE_CAPS */
 };
 
@@ -70,6 +73,7 @@ enum {
 qk_tap_dance_action_t tap_dance_actions[] = {
   [TD_NXT_PREV]  = ACTION_TAP_DANCE_DOUBLE(KC_MNXT, KC_MPRV),
   [TD_RCMD_RSHFT] = ACTION_TAP_DANCE_DOUBLE(KC_RGUI, KC_RSFT),
+  [TD_RCTRL_RALT] = ACTION_TAP_DANCE_DOUBLE(KC_RCTRL, KC_RALT),
   [TD_RAISE_AT] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, raise_at, raise_at_reset),
   [F_TMUX_PREFIX] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, f_tmux_prefix, f_tmux_prefix_reset),
   [TD_SEMI_COLON] = ACTION_TAP_DANCE_DOUBLE(KC_SCLN, KC_COLN),
@@ -143,7 +147,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /* Adjust (Lower + Raise)
   * ,------+--------+----------+--------------+-------------+------------+-----------+-----+-----+-----+-----+-----.
-  * |  xxx | QWERTY | Audio on |   Audio off  |    RESET    |     xxx    |    xxx    | xxx | xxx | xxx | xxx | xxx |
+  * |  WIN | QWERTY | Audio on |   Audio off  |    RESET    |     xxx    |    xxx    | xxx | xxx | xxx | xxx | xxx |
   * +------+--------+----------+--------------+-------------+------------+-----------+-----+-----+-----+-----+-----+
   * | Caps |   xxx  |    xxx   | CHROME_DEBUG | CHROME_ONLY |     xxx    |    xxx    | xxx | xxx | xxx | xxx | xxx |
   * +------+--------+----------+--------------+-------------+------------+-----------+-----+-----+-----+-----+-----+
@@ -153,11 +157,31 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   * `------+--------+----------+--------------+-------------+------------+-----------+-----+-----+-----+-----+-----'
   */
   [_ADJUST] = LAYOUT_ortho_4x12( \
-    XXXXXXX, QWERTY,  AU_ON,   AU_OFF,       RESET,       XXXXXXX, XXXXXXX,         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
+    WINDOWS, QWERTY,  AU_ON,   AU_OFF,       RESET,       XXXXXXX, XXXXXXX,         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
     KC_CAPS, XXXXXXX, XXXXXXX, CHROME_DEBUG, CHROME_ONLY, XXXXXXX, XXXXXXX,         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
     XXXXXXX, MUV_DE,  MUV_IN,  MU_ON,        MU_OFF,      KC_MPRV, KC_MNXT,         XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
     XXXXXXX, XXXXXXX, XXXXXXX, _______,      _______,     KC_MPLY, TD(TD_NXT_PREV), _______, _______, XXXXXXX, XXXXXXX, PWD \
-  )
+  ),
+
+  
+  /* Windows
+  * ,---------------------------------------------------------------------------------------------------------.
+  * |  `   |   Q  |   W  |   E  |      R      |   T  |   Y  |     U     |      I    |   O  |   P  |    Bksp   |
+  * |------+------+------+------+-------------+------+------+-----------+-----------+------+------+-----------|
+  * | esc  |   A  |   S  |   D  |      F      |   G  |   H  |     J     |      K    |   L  |  ; : |   Enter   |
+  * |------+------+------+------+-------------+------|------+-----------+-----------+------+------+-----------|
+  * | shift|   Z  |   X  |   C  |      V      |   B  |   N  |     M     |      ,    |   .  |   /  |    ' "    |
+  * |------+------+------+------+-------------+------+------+-----------+-----------+------+------+-----------|
+  * | ctrl |  alt | cmd  |Lower |    Raise    | tab  | Space|  Raise/@  |   Lower   | alt  | win  |  ctrl/alt |
+  * `---------------------------------------------------------------------------------------------------------'
+  */
+  [_WINDOWS] = LAYOUT_ortho_4x12( \
+    KC_GRV,  KC_Q,    KC_W,    KC_E,  KC_R,  KC_T,     KC_Y,   KC_U,            KC_I,    KC_O,    KC_P,              KC_BSPC, \
+    KC_ESC,  KC_A,    KC_S,    KC_D,  KC_F,  KC_G,     KC_H,   KC_J,            KC_K,    KC_L,    TD(TD_SEMI_COLON), KC_ENT, \
+    KC_LSFT, KC_Z,    KC_X,    KC_C,  KC_V,  KC_B,     KC_N,   KC_M,            KC_COMM, KC_DOT,  KC_SLSH,           KC_QUOT, \
+    KC_LCTL, KC_LALT, KC_LGUI, LOWER, RAISE, KC_TAB,   KC_SPC, TD(TD_RAISE_AT), LOWER,   KC_RALT, KC_RGUI,           TD(TD_RCTRL_RALT)\
+  ),
+
 };
 
 
@@ -298,6 +322,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           PLAY_SONG(mu_on_scale);
         #endif
         SEND_STRING(SS_TAP(X_F8));
+      }
+      return false;
+      break;
+
+    case WINDOWS:
+      if (record->event.pressed) {
+        #ifdef AUDIO_ENABLE
+          PLAY_SONG(music_scale);
+        #endif
+        persistant_default_layer_set(1UL<<_WINDOWS);
       }
       return false;
       break;
